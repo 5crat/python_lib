@@ -107,7 +107,7 @@ class HttpRequest(object):
 
             if charset != 'utf8':
                 html = html.decode(charset).encode('utf8')
-            return {'status_code': str(r.status_code), 'header': r.headers, 'content':  html}
+            return {'status_code': str(r.status_code), 'header': r.headers, 'html':  html}
         except Exception as e:
             print 'error :  ' + str(e)
             return None
