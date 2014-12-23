@@ -67,7 +67,7 @@ class HttpRequest(object):
                 return
             methods = ['GET', 'POST', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']
             if self.web_method.upper() not in methods:
-                print r'HTTP请求的方式错误,无法识别该方式： '+ self.method
+                print 'HTTP请求的方式错误,无法识别该方式： '+ self.method
 
             r = requests.request(
                 self.web_method.upper(),
@@ -77,12 +77,11 @@ class HttpRequest(object):
                 proxies=self.proxies,
                 timeout=self.timeout,
             )
-            check_jump = False
+
             check_jump_payloads = [
                 'window.location\s?=\s?(.*);',
                 'window.location.href\s?=\s?(.*);',
-                '<meta http-equiv=\"refresh\".*url=(.*)\s?',
-                ]
+                '<meta http-equiv=\"refresh\".*url=(.*)\s?']
 
             for i in check_jump_payloads:
                 check_jump = re.findall(i, r.content.lower())
