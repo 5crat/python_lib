@@ -60,14 +60,14 @@ class HttpRequest(object):
     def http_request(self):
         """
         http request method
-        :return list {'status_code':...,''header:....,'content':...}
+        :return list {'status_code <str>':...,'header <dict>':....,'content <str>':...}
         """
         try:
             if not self.target:
                 return
             methods = ['GET', 'POST', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']
             if self.web_method.upper() not in methods:
-                print 'HTTP请求的方式错误,无法识别该方式： '+ self.method
+                print 'HTTP请求的方式错误,无法识别该方式： '+ self.web_method
 
             r = requests.request(
                 self.web_method.upper(),
@@ -75,8 +75,7 @@ class HttpRequest(object):
                 data=self.data,
                 headers=self.headers,
                 proxies=self.proxies,
-                timeout=self.timeout,
-            )
+                timeout=self.timeout)
 
             check_jump_payloads = [
                 'window.location\s?=\s?(.*);',
