@@ -80,7 +80,7 @@ class HttpRequest(object):
             check_jump_payloads = [
                 'window.location\s?=\s?(.*);',
                 'window.location.href\s?=\s?(.*);',
-                '<meta http-equiv=\"refresh\".*url=(.*)\s?']
+                '<meta http-equiv=\"refresh\".*url=(.*)\s?/>']
 
             for i in check_jump_payloads:
                 check_jump = re.findall(i, r.content.lower())
@@ -89,8 +89,6 @@ class HttpRequest(object):
                     if 'http' in addr:
                         self.target = addr
                     else:
-                        if self.target.endswith('/') == False:
-                            self.target += '/'
                         r = requests.request(
                             self.web_method.upper(),
                             self.target + addr,
@@ -111,8 +109,9 @@ class HttpRequest(object):
             return None
 
 if __name__ == '__main__':
-    a = HttpRequest('http://www.baidu.com')
-    if check_proxy('http://118.26.152.169:80'):
+    p = 'http://118.26.152.169:80'
+    if check_proxy(p):
+        a = HttpRequest('http://www.baidu.com', proxies=p)
         b = a.http_request()
         for i in b:
             print b[i]
