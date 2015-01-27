@@ -9,7 +9,7 @@
 import re
 import chardet
 import requests
-import urllib
+import urllib2
 
 #超时
 timeout = 5
@@ -18,20 +18,24 @@ UserAgent = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Tri
 
 def check_proxy(host):
     """
-    check http proxy active
+    check http proxy status
     :param host:
     :return bool:
     """
     try:
-        urllib.urlopen(
-            "http://www.baidu.com",
-            proxies={'http': host}
-        )
-        return True
-    except Exception as e:
-        print e
+        proxy_handler = urllib2.ProxyHandler({'http': host})
+        opener = urllib2.build_opener(proxy_handler)
+        opener.addheaders = [('User-agent', UserAgent)]
+        urllib2.install_opener(opener)
+        req=urllib2.Request('http://www.baidu.com')  # change the URL to test here
+        sock=urllib2.urlopen(req)
+    except urllib2.HTTPError, e:
+        print 'Error code: ', e.code
+        return e.code
+    except Exception, detail:
+        print "ERROR:", detail
         return False
-
+    return True
 
 class HttpRequest(object):
     """
@@ -42,7 +46,7 @@ class HttpRequest(object):
             target='',
             web_method='GET',
             data='',
-            proxies='',
+            proxies={},
             timeout=10,
             useragent=UserAgent,
     ):
@@ -76,7 +80,6 @@ class HttpRequest(object):
                 headers=self.headers,
                 proxies=self.proxies,
                 timeout=self.timeout)
-
             check_jump_payloads = [
                 'window.location\s?=\s?(.*);',
                 'window.location.href\s?=\s?(.*);',
@@ -109,11 +112,9 @@ class HttpRequest(object):
             return None
 
 if __name__ == '__main__':
-    p = 'http://118.26.152.169:80'
-    if check_proxy(p):
-        a = HttpRequest('http://www.baidu.com', proxies=p)
+    proxy = {'http': 'http://122.96.59.106:80'}
+    if check_proxy(proxy['http']):
+        a = HttpRequest(target='http://www.baidu.com', proxies=proxy)
         b = a.http_request()
         for i in b:
             print b[i]
-    else:
-        print 'error'
