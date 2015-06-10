@@ -6,4 +6,6 @@ Python_lib
 
 #####DB.py ---- 数据库操作，目前只支持mysql
 
+#####getProxyList.py ---- 通过xici获取代理ip，返回结果{'http':[{},{}..],'https':[{},{}....]'
+
 #####logger.py ---- 日志
