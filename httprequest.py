@@ -9,7 +9,6 @@
 import re
 import chardet
 import requests
-import urllib2
 
 #超时
 timeout = 10
@@ -91,8 +90,7 @@ class HttpRequest(object):
 
 if __name__ == '__main__':
     proxy = {'http': 'http://122.96.59.106:80'}
-    if check_proxy(proxy['http']):
-        a = HttpRequest(target='http://www.baidu.com', proxies=proxy)
-        b = a.http_request()
-        for i in b:
-            print b[i]
+    a = HttpRequest(target='http://www.baidu.com', proxies=proxy)
+    b = a.http_request()
+    for i in b:
+        print b[i]
