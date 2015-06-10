@@ -12,23 +12,24 @@ import requests
 import urllib2
 
 #超时
-timeout = 5
+timeout = 10
 UserAgent = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)'
 
 
-def check_proxy(host):
+def check_proxy(proxyIp):
     """
     check http proxy status
-    :param host:
+    :param proxyIp
     :return bool:
     """
+    p = proxyIp
     try:
-        proxy_handler = urllib2.ProxyHandler({'http': host})
+        proxy_handler = urllib2.ProxyHandler(p)
         opener = urllib2.build_opener(proxy_handler)
         opener.addheaders = [('User-agent', UserAgent)]
         urllib2.install_opener(opener)
-        req=urllib2.Request('http://www.baidu.com')  # change the URL to test here
-        sock=urllib2.urlopen(req)
+        req = urllib2.Request('http://httpbin.org/ip')  # change the URL to test here
+        html = urllib2.urlopen(req)
     except urllib2.HTTPError, e:
         print 'Error code: ', e.code
         return e.code
