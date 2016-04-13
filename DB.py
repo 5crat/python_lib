@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-coding:utf-8-*-
-#-*-author:scrat-*-
+# -*-author:scrat-*-
 
 
 import MySQLdb
@@ -20,7 +20,7 @@ class DB():
         :param charset:
         :return:
         """
-        if db_type == None:
+        if db_type is None:
             print 'Not Enter db_type!'
             exit()
         self.db_type = db_type
@@ -34,7 +34,7 @@ class DB():
         self.__where = ''
         self.__like = ''
 
-        if self.db_type == 'mysql':
+        if self.db_type is 'mysql':
             self.conn = MySQLdb.connect(
                 db=self.db_name,
                 host=self.host,
@@ -103,7 +103,10 @@ class DB():
         :return result:
         """
         condition = self._param(condition)
-        self.cur.execute("select * from "+self.__table+" where "+condition['key']+"="+condition['value'][0])
+        if type(condition['value']) == 'int':
+            self.cur.execute("select * from "+self.__table+" where "+condition['key']+"=%d", condition['value'][0])
+        else:
+            self.cur.execute("select * from "+self.__table+" where "+condition['key']+"=%s", condition['value'][0])
         return self.cur.fetchall()
 
     def select_all(self, field):
@@ -156,7 +159,10 @@ class DB():
     def delete(self, condition):
         con = self._param(condition)
         try:
-            self.cur.execute('delete from '+self.__table+' where '+con['key']+con['value'][0])
+            if type(con) == 'int':
+                self.cur.execute('delete from '+self.__table+' where '+con['key']+'=%d', con['value'][0])
+            else:
+                self.cur.execute('delete from '+self.__table+' where '+con['key']+'=%s', con['value'][0])
             self.conn.commit()
             return True
         except Exception as e:
